@@ -1,3 +1,5 @@
+import { forEach } from 'ramda';
+
 import {
   listCombiner,
   compose,
@@ -68,36 +70,67 @@ function filterData<T>(
   const options = { ...optionsDefault, ...optionsIn };
 
   const dataFilters = searchConditionsValNotEmpty.map((searchCondition) => {
-    const { key, type } = searchCondition;
+    const { key, type, value} = searchCondition;
 
     // get partial function
     const curriedFilter = curry(filtersMap[type]);
 
-    // target key is one
     let predicator;
     if (typeof key === 'string') {
-      predicator = makeSinglePredicator(
-        searchCondition as SearchCondition,
-        options,
-        curriedFilter,
-      );
+      if (Array.isArray(value)) {
+        predicator = anyPass(
+          value.map((oneValue) =>
+            makeSinglePredicator(
+              {
+                key,
+                value: oneValue,
+                type: searchCondition.type,
+              },
+            options,
+            curriedFilter,
+            ),
+          ),
+        );
+      } else {
+        predicator = makeSinglePredicator(
+          searchCondition as SearchCondition,
+          options,
+          curriedFilter,
+        );
+      }
     } else {
       // or search for multiple keys
+      if (!Array.isArray(value)) {
+        predicator = anyPass(
+          key.map((oneKey) =>
+            makeSinglePredicator(
+              {
+                key: oneKey,
+                value,
+                type: searchCondition.type,
+              },
+              options,
+              curriedFilter,
+            ),
+          ),
+        );
+        return filter(predicator);
+      }
       predicator = anyPass(
         key.map((oneKey) =>
+        value.map((oneValue) =>
           makeSinglePredicator(
             {
               key: oneKey,
-              value: searchCondition.value!,
+              value: oneValue,
               type: searchCondition.type,
             },
             options,
             curriedFilter,
           ),
         ),
-      );
+      ).flat());
     }
-
     return filter(predicator);
   });
 

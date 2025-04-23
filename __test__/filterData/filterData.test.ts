@@ -295,7 +295,7 @@ describe('no available SearchConditions should return immediately', () => {
       },
       {
         key: 'name',
-        value: undefined,
+        value: '',
         type: SearchType.LK,
       },
     ];
@@ -347,5 +347,32 @@ describe('key is not exist', () => {
     const result = filterData(data, searchConditions, { includeNull: true });
 
     expect(result).toEqual(data);
+  });
+});
+
+describe('value is string[]', () => {
+  test('or search have result', () => {
+    const searchConditions = [
+      {
+        key: ['age'],
+        value: [32, 37],
+        type: SearchType.EQ,
+      },
+    ];
+
+    const result = filterData(data, searchConditions);
+
+    expect(result).toEqual([
+      {
+        name: 'David Johnson',
+        middleName: 'Davjohn',
+        age: 32,
+      },
+      {
+        name: 'Michael Johnson',
+        middleName: 'Michjohn',
+        age: 37,
+      },
+    ]);
   });
 });
