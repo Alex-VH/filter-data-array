@@ -34,12 +34,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thundermiracle/filter-data.git"
+    "url": "git+https://github.com/Alex-VH/filter-data-array.git"
   },
   "bugs": {
-    "url": "https://github.com/thundermiracle/filter-data/issues"
+    "url": "https://github.com/Alex-VH/filter-data-array/issues"
   },
-  "homepage": "https://github.com/thundermiracle/filter-data#readme",
+  "homepage": "https://github.com/Alex-VH/filter-data-array#readme",
   "scripts": {
     "eslint:src": "eslint src/",
     "eslint:test": "eslint __test__/",
